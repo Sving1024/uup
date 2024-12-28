@@ -13,35 +13,6 @@ on:
         options:
           - uupdump.net
           - uup.rg-adguard.net
-      uploadPixeldrain:
-        description: 'Upload to pixeldrain'
-        required: false
-        default: true
-        type: boolean
-      uploadWenshushu:
-        description: 'Upload to wenshushu'
-        required: false
-        default: false
-        type: boolean
-#      uploadTransfer:
-#        description: 'Upload to Transfer'
-#        required: false
-#        default: 'false'
-#        type: boolean
-#      transferDomain:
-#        description: 'Transfer domain'
-#        required: true
-#        default: 'https://transfer.sh/'
-#      Max-Days:
-#        description: 'Transfer upload max days'
-#        required: false
-#        default: ''
-#      uploadToOneDrive:
-#        description: 'Upload to OneDrive'
-#        required: false
-#        default: 'false'
-#        type: boolean
-
 jobs:
   build:
     runs-on: windows-2022
@@ -77,28 +48,11 @@ jobs:
       run: |
         $ISO=Get-ChildItem *.ISO -Name
         curl -T "$ISO" https://pixeldrain.com/api/file/ > pixeldrain_output.json
-    - name: Get download link from pixeldrain
-      if: steps.pixeldrain.outputs.returncode == '0'
-      run: |
-        $id = Get-Content pixeldrain_output.json | ConvertFrom-Json | Select-Object -ExpandProperty id
-        Write-Output "Download link: https://pixeldrain.com/u/$id"
-    - name: Upload firmware to wenshushu
-      id: wenshushu
-      if: github.event.inputs.uploadWenshushu == 'true'
-      run: |
-        $ISO=Get-ChildItem *.ISO -Name
-        curl -L "https://github.com/Mikubill/transfer/releases/download/v0.4.17/transfer_0.4.17_windows_amd64.zip" -o "cow.zip"
-        unzip -oq cow.zip
-        ./transfer.exe wenshushu -p 64 --no-progress $ISO
-#    - name: Upload ISO to Transfer
-#      if: github.event.inputs.uploadTransfer == 'true'
-#      run: |
-#        $ISO=Get-ChildItem *.ISO -Name
-#        curl -H 'Max-Days: ${{ github.event.inputs.Max-Days }}' -sT $ISO '${{ github.event.inputs.transferDomain }}'
-#    - name: Upload ISO to OneDrive
-#      if: github.event.inputs.uploadToOneDrive == 'true'
-#      run: |
-#        mkdir -p $ENV:APPDATA\rclone
-#        echo '${{ secrets.RCLONE_CONFIG }}' >> $ENV:APPDATA\rclone\rclone.conf
-#        $ISO=Get-ChildItem *.ISO -Name
-#        rclone copy $ISO "onedrive:/Public/os/windows" -P
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.name }}
+        path: |
+          c:/uup/*.json
+          c:/uup/*.iso
+          c:/uup/*.iso.sha256.txt
