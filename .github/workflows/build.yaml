@@ -51,7 +51,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ matrix.name }}
+        name: iso
         path: |
           c:/uup/*.json
           c:/uup/*.iso
