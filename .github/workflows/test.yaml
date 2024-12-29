@@ -1,0 +1,50 @@
+name: Build Windows iso
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2022
+    defaults:
+      run:
+        working-directory: C:\uup
+    steps:
+    - name: uupdump.net UUP convert to ISO
+      shell: cmd
+      run: |
+        echo "test infomation" > C:\uup\1.iso
+    - name: Check the ISO hash
+      run: |
+        $ISO=Get-ChildItem *.ISO -Name
+        Get-FileHash $ISO -Algorithm SHA1| Format-List
+        (Get-Item $ISO).Length/1MB
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: iso
+        path: |
+          c:/uup/*.json
+          c:/uup/*.iso
+          c:/uup/*.iso.sha256.txt
+    
+  uploadToR2:
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [build]
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/download-artifact@v4
+        id: download
+
+      - name: Display structure of downloaded files
+        run: ls -R ${{ steps.download.outputs.download-path }}
+      
+      - uses: ./upload
+        with:
+          RCLONE_CONFIG_CONTENT: ${{secrets.RCLONE_CONFIG}}
+          RCLONE_CONFIG_NAME: onedrive
+          dest_path: /iso/
+          local_path: ${{ steps.download.outputs.download-path }}
