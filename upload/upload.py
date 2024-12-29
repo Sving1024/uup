@@ -18,7 +18,10 @@ if __name__ == "__main__":
         ["rclone", "copy", "./", f"{CONFIG_NAME}/{ROOT_PATH}", "--copy-links"],
         stderr=subprocess.PIPE,
     )
+
+    print(r.stderr.decode())
+    print(r.stdout.decode())
+
     if r.returncode != 0:
         print("Failed when copying to remote")
-        print(r.stderr.decode())
         exit(0)
