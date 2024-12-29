@@ -10,10 +10,6 @@ find $local_path -type f -name "*.iso" -exec cp {} ./upload_packages/ \;
 find $local_path -type f -name "*.ISO" -exec cp {} ./upload_packages/ \;
 find $local_path -type f -name "*.iso" -exec echo {} \;
 find $local_path -type f -name "*.ISO" -exec echo {} \;
-find $local_path -type f -name "*.json" -exec cp {} ./upload_packages/ \;
-find $local_path -type f -name "*.json" -exec echo {} \;
-find $local_path -type f -name "*.iso.sha256.txt" -exec cp {} ./upload_packages/ \;
-find $local_path -type f -name "*.iso.sha256.txt" -exec echo {} \;
 
 echo "$RCLONE_CONFIG_NAME"
 
