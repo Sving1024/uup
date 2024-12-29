@@ -9,11 +9,14 @@ jobs:
       run:
         working-directory: C:\uup
     steps:
+    - name: making directory
+      working-directory: .\
+      run: |
+        mkdir C:\uup\
     - name: uupdump.net UUP convert to ISO
       shell: cmd
       run: |
-        mkdir C:/uup/
-        echo "test infomation" > C:/uup/1.iso
+        echo "test infomation" > C:\uup\1.iso
     - name: Check the ISO hash
       run: |
         $ISO=Get-ChildItem *.ISO -Name
