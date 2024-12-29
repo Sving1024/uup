@@ -17,5 +17,5 @@ fi
 cd upload_packages || exit 1
 
 echo "::group::Uploading to remote"
-python3 $init_path/create-db-and-upload-action/upload.py 
+python3 $init_path/upload/upload.py 
 echo "::endgroup::"

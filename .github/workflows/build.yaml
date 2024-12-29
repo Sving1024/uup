@@ -15,11 +15,11 @@ on:
           - uup.rg-adguard.net
 jobs:
   buildAUR:
-    runs-on: ubuntu-latest
+    runs-on: windows-2022
     steps:
     - uses: actions/checkout@v4
     
-    - uses: ./build-iso
+    - uses: .\build-iso
       with:
         UUPUrl: ${{ github.event.inputs.UUPUrl }}
         UUPScript: ${{ github.event.inputs.UUPScript }}
