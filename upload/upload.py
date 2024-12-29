@@ -17,6 +17,7 @@ if __name__ == "__main__":
     r = subprocess.run(
         ["rclone", "copy", "./", f"{CONFIG_NAME}/{ROOT_PATH}", "--copy-links"],
         stderr=subprocess.PIPE,
+        stdout=subprocess.PIPE
     )
 
     print(r.stderr.decode())
