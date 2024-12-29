@@ -7,7 +7,9 @@ mkdir upload_packages
 echo $local_path
 
 find $local_path -type f -name "*.iso" -exec cp {} ./upload_packages/ \;
+find $local_path -type f -name "*.ISO" -exec cp {} ./upload_packages/ \;
 find $local_path -type f -name "*.iso" -exec echo {} \;
+find $local_path -type f -name "*.ISO" -exec echo {} \;
 find $local_path -type f -name "*.json" -exec cp {} ./upload_packages/ \;
 find $local_path -type f -name "*.json" -exec echo {} \;
 find $local_path -type f -name "*.iso.sha256.txt" -exec cp {} ./upload_packages/ \;
