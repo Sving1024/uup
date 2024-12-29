@@ -55,7 +55,7 @@ jobs:
   uploadToR2:
     runs-on: ubuntu-latest
     if: always()
-    needs: [buildAUR]
+    needs: [build]
 
     steps:
       - uses: actions/checkout@v4
