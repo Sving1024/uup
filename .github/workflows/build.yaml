@@ -14,40 +14,16 @@ on:
           - uupdump.net
           - uup.rg-adguard.net
 jobs:
-  build:
+  buildAUR:
     runs-on: windows-2022
-    defaults:
-      run:
-        working-directory: C:\uup
     steps:
-    - name: Installation dependencies
-      working-directory: .\
-      run: |
-        choco install --yes --no-progress curl rclone
-        mkdir -p C:\uup
-    - name: uupdump.net UUP convert to ISO
-      if: github.event.inputs.UUPScript == 'uupdump.net'
-      shell: cmd
-      run: |
-        curl -L "${{ github.event.inputs.UUPUrl }}" -o uup.zip
-        unzip -oq uup.zip
-        echo 0 | .\uup_download_windows.cmd
-    - name: uup.rg-adguard.net UUP convert to ISO
-      if: github.event.inputs.UUPScript == 'uup.rg-adguard.net'
-      run: |
-        curl -L "${{ github.event.inputs.UUPUrl }}" -o uup.cmd
-        echo 0 | .\uup.cmd
-    - name: Check the ISO hash
-      run: |
-        $ISO=Get-ChildItem *.ISO -Name
-        Get-FileHash $ISO -Algorithm SHA1| Format-List
-        (Get-Item $ISO).Length/1MB
-    - name: Upload firmware to pixeldrain
-      id: pixeldrain
-      if: github.event.inputs.uploadPixeldrain == 'true'
-      run: |
-        $ISO=Get-ChildItem *.ISO -Name
-        curl -T "$ISO" https://pixeldrain.com/api/file/ > pixeldrain_output.json
+    - uses: actions/checkout@v4
+    
+    - uses: ./build-iso
+      with:
+        UUPUrl: ${{ github.event.inputs.UUPUrl }}
+        UUPScript: ${{ github.event.inputs.UUPScript }}
+    
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
@@ -56,3 +32,24 @@ jobs:
           c:/uup/*.json
           c:/uup/*.iso
           c:/uup/*.iso.sha256.txt
+    
+  uploadToR2:
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [buildAUR]
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/download-artifact@v4
+        id: download
+
+      - name: Display structure of downloaded files
+        run: ls -R ${{ steps.download.outputs.download-path }}
+      
+      - uses: ./upload
+        with:
+          RCLONE_CONFIG_CONTENT: ${{secrets.RCLONE_CONFIG}}
+          RCLONE_CONFIG_NAME: onedrive
+          dest_path: /iso/
+          local_path: ${{ steps.download.outputs.download-path }}

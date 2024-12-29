@@ -1,0 +1,19 @@
+name: 'upload iso'
+inputs:
+  RCLONE_CONFIG_CONTENT:
+    required: true
+  RCLONE_CONFIG_NAME:
+    required: false
+  dest_path:
+    required: true
+  local_path:
+    default: './'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  
+  env:
+    RCLONE_CONFIG_CONTENT: ${{ inputs.RCLONE_CONFIG_CONTENT }}
+    RCLONE_CONFIG_NAME: ${{inputs.RCLONE_CONFIG_NAME}}
+    dest_path: ${{ inputs.dest_path }}
+    local_path: ${{ inputs.local_path }}
