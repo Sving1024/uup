@@ -1,7 +1,6 @@
 import subprocess
 import os
 
-REPO_NAME = os.environ["repo_name"]
 ROOT_PATH = os.environ["dest_path"]
 CONFIG_NAME = os.environ.get("RCLONE_CONFIG_NAME", "")
 
