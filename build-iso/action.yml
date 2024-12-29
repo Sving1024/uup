@@ -2,13 +2,13 @@ name: Build Windows iso
 on:
   workflow_call:
     inputs:
-    UUPUrl:
-      description: 'UUP script download url'
-      required: true
-    UUPScript:
-      description: 'UUP script'
-      required: true
-      default: 'uupdump.net'
+      UUPUrl:
+        description: 'UUP script download url'
+        required: true
+      UUPScript:
+        description: 'UUP script'
+        required: true
+        default: 'uupdump.net'
 
 jobs:
   build:
